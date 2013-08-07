@@ -1,0 +1,28 @@
+{
+  "name": "fuel",
+  "version": "0.0.1",
+  "description": "a lightweight dependency injection framework for javascript",
+  "main": "fuel.js",
+  "scripts": {
+    "test": "nodeunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jdc0589/Fuel.git"
+  },
+  "keywords": [
+    "dependency",
+    "injection",
+    "javascript",
+    "nodejs",
+    "browser"
+  ],
+  "author": "people",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jdc0589/Fuel/issues"
+  },
+  "dependencies": {
+    "underscore": "~1.5.1"
+  }
+}
