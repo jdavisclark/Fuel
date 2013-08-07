@@ -1,5 +1,4 @@
-var _ = require("underscore"),
-	functionParser = require("./lib/functionParser");
+var functionParser = require("./lib/functionParser");
 
 module.exports = Fuel;
 
