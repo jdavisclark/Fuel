@@ -4,7 +4,7 @@
   "description": "a lightweight dependency injection framework for javascript",
   "main": "fuel.js",
   "scripts": {
-    "test": "nodeunit"
+    "test": "nodeunit tests/"
   },
   "repository": {
     "type": "git",
