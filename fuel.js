@@ -7,15 +7,18 @@ function Fuel() {
 }
 
 Fuel.prototype.value = function(name, value) {
-	this.register(name, "value", value)	;
+	this.register(name, "value", value);
+	return this;
 };
 
-Fuel.prototype.factory = function(name, factoryFn) {
-	this.register(name, "factory", factoryFn);
+Fuel.prototype.factory = function(name, value) {
+	this.register(name, "factory", value);
+	return this;
 };
 
-Fuel.prototype.func = function(name, func) {
-	this.register(name, "func", func);
+Fuel.prototype.func = function(name, value) {
+	this.register(name, "func", value);
+	return this;
 };
 
 // protected/internal
@@ -30,7 +33,7 @@ Fuel.prototype.register = function(name, type, thing) {
 		argument: thing
 	};
 
-	if(type === "func") {		
+	if(type === "func" || type === "factory") {		
 		component.parameterNames = functionParser.parseParameterNames(component.argument);
 	}
 
@@ -38,45 +41,49 @@ Fuel.prototype.register = function(name, type, thing) {
 };
 
 
-Fuel.prototype.resolve = function(name) {
+Fuel.prototype.get = function(name, inject) {
 	var component = this.container[name];
 
 	if(component === undefined) {
 		return undefined;
 	}
 
+	// inject defaults to true
+	inject = inject === undefined ? true : inject;
+
 	var type = component.type;
 	if(type === "value") {
 		return resolveValue(component);
-	} else if(type === "factory") {
-		return resolveFactory(component);
 	} else if(type === "func") {
-		return resovleFunc(component, this);
+		return resovleFunc(this, component, inject);
+	} else if(type === "factory") {
+		return resolveFactory(this, component, inject)
 	}
+};
+
+Fuel.prototype.inject = function(f) {
+	return injectFunction(this, f);
 };
 
 function resolveValue(component) {
 	return component.argument;
 }
 
-function resolveFactory(component) {
-	return component.argument();
+function resovleFunc(self, component, inject) {
+	return inject ?	injectFunction(self, component.argument, component.paramNames) : resolveValue(component);	
 }
 
-function resovleFunc(component, instance) {		
-	var fakeArgArray = {
-		length: 0
-	};
+function resolveFactory(self, component, inject) {
+	return inject ? injectFunction(self, component.argument, component.paramNames)() : resolveValue(component);
+}
 
-	component.parameterNames.forEach(function(name, idx) {
-		fakeArgArray[idx + ""] = instance.resolve(name);
-		fakeArgArray.length = fakeArgArray.length + 1;
+function injectFunction(self, f, paramNames) {
+	paramNames = paramNames || functionParser.parseParameterNames(f);
+	var args = paramNames.map(function(name) {
+		return self.get(name);
 	});
 
-	var funcArgs = Array.prototype.slice.call(fakeArgArray);	
-	return newCall.apply(null, [component.argument].concat(funcArgs));
-}
+	args.unshift(undefined);
 
-function newCall(Cls) {
-    return new (Cls.bind.apply(Cls, arguments));    
+	return f.bind.apply(f, args);
 }
