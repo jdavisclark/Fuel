@@ -8,8 +8,10 @@ Dead simple dependency injection and inversion of control for javascript.
 Because inversion of control containers and dependency injection is more flexible than the service locator pattern, which for some reason seems to be the standard for javascript.
 
 
-Examples
-####
+
+## Examples
+
+
 
 ```javascript
 var Fuel = require("fuel");
