@@ -23,7 +23,6 @@
     "url": "https://github.com/jdc0589/Fuel/issues"
   },
   "dependencies": {
-    "underscore": "~1.5.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
