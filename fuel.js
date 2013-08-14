@@ -35,8 +35,7 @@ Fuel.prototype.register = function(name, type, thing, lifecycle) {
 	var component = {
 		name: name,
 		type: type,
-		argument: thing,
-		cache: null
+		argument: thing		
 	};
 
 	if (type === "func" || type === "factory") {
@@ -48,23 +47,20 @@ Fuel.prototype.register = function(name, type, thing, lifecycle) {
 };
 
 
-Fuel.prototype.get = function(name, inject) {
+Fuel.prototype.get = function(name) {
 	var component = this.container[name];
 
 	if (component === undefined) {
 		return undefined;
 	}
 
-	// inject defaults to true
-	inject = inject === undefined ? true : inject;
-
 	var type = component.type;
 	if (type === "value") {
 		return resolveValue(component);
 	} else if (type === "func") {
-		return resovleFunc(this, component, inject);
+		return resovleFunc(this, component);
 	} else if (type === "factory") {
-		return resolveFactory(this, component, inject)
+		return resolveFactory(this, component)
 	}
 };
 
@@ -76,12 +72,18 @@ function resolveValue(component) {
 	return component.argument;
 }
 
-function resovleFunc(self, component, inject) {	
-	return inject ? injectFunction(self, component.argument, component.paramNames) : resolveValue(component);
+function resovleFunc(self, component) {
+	return injectFunction(self, component.argument, component.paramNames);
 }
 
-function resolveFactory(self, component, inject) {
-	return inject ? injectFunction(self, component.argument, component.paramNames)() : resolveValue(component);
+function resolveFactory(self, component) {
+	if(component.lifecycle === lifecycles["singleton"]) {
+		component.cache = component.cache || injectFunction(self, component.argument, component.paramNames)();
+
+		return component.cache;
+	} else {
+		return injectFunction(self, component.argument, component.paramNames)();	
+	}	
 }
 
 function injectFunction(self, f, paramNames) {

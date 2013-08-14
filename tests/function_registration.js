@@ -23,12 +23,8 @@ exports["function registration + value injection"] = function(test) {
 		});
 
 
-	// with injection
 	test.deepEqual(f.get("tester")(), "bar durr");
 	test.deepEqual(f.get("tester", true)(), "bar durr");
-
-	// without injection
-	test.deepEqual(f.get("tester", false)("one", "two"), "one two");
-
+	
 	test.done();
 };
