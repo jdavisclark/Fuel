@@ -3,27 +3,27 @@
 var Fuel = require("../fuel");
 
 exports["simple value registration"] = function(test) {
-	var f = new Fuel();
+	var fuel = new Fuel();
 
-	f.value("testValue", 123);
-	test.equal(f.get("testValue"), 123);
+	fuel.value("testValue", 123);
+	test.equal(fuel.get("testValue"), 123);
 
 	test.done();
 };
 
 exports["value registration with ref type"] = function(test) {
-	var f = new Fuel(),
-	foo = {
-		bar: "baz"
-	};
+	var fuel = new Fuel(),
+		foo = {
+			bar: "baz"
+		};
 
-	f.value("tester", foo);
+	fuel.value("tester", foo);
 
 	// deep value comparison should be equal
-	test.deepEqual(f.get("tester"), foo);
+	test.deepEqual(fuel.get("tester"), foo);
 
 	// since foo is a ref type
-	test.equal(f.get("tester"), foo);
+	test.equal(fuel.get("tester"), foo);
 
 	test.done();
 };
